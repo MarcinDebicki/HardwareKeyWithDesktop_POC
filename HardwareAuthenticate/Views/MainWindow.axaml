@@ -1,0 +1,54 @@
+<Window
+    x:Class="HardwareAuthenticate.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:HardwareAuthenticate.ViewModels"
+    Title="HardwareAuthenticate"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainWindowViewModel"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <StackPanel Margin="10,10,10,10">
+        <Button Command="{Binding Path=MakeNewCredential}">Make new credential</Button>
+        <Label>Public Key Credential:</Label>
+        <TextBox
+            Height="300"
+            AcceptsReturn="True"
+            BorderThickness="1"
+            Text="{Binding Path=PublicKeyCredentialSerialize}"
+            TextWrapping="Wrap" />
+        <Label>---</Label>
+        <Button Command="{Binding Path=GetAssertion}">Get Assertion</Button>
+        <Label>Challenge:</Label>
+        <TextBox
+            AcceptsReturn="True"
+            BorderThickness="1"
+            Text="{Binding Path=ChallengeSerialize}"
+            TextWrapping="Wrap" />
+        <Label>Authenticator Assertion Response:</Label>
+        <TextBox
+            Height="300"
+            AcceptsReturn="True"
+            BorderThickness="1"
+            Text="{Binding Path=AuthenticatorAssertionResponseSerialize}"
+            TextWrapping="Wrap" />
+        <Label>---</Label>
+        <Button Command="{Binding Path=ValidateAssertion}">Validate</Button>
+        <Label>Validate result:</Label>
+        <TextBox
+            AcceptsReturn="True"
+            BorderThickness="1"
+            Text="{Binding Path=ValidationResult}"
+            TextWrapping="Wrap" />
+
+    </StackPanel>
+
+</Window>
