@@ -1,7 +1,9 @@
 # HardwareKeyWithDesktop_POC
 
 Create FIDO2 credentials (WebAuthService.MakeNewCredentialAsync)
+
 Create Authenticator Assertion (WebAuthService.GetAssertionAsync)
+
 And check if the AuthenticatorAssertionResponse matches the PublicKeyCredential generated earlier (WebAuthService.Validate)
 
 
