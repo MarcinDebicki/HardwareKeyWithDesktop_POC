@@ -4,11 +4,11 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using DSInternals.Win32.WebAuthn;
 using DSInternals.Win32.WebAuthn.COSE;
+using HardwareAuthenticate.Models;
 using PeterO.Cbor;
 using AuthenticatorAssertionResponse = DSInternals.Win32.WebAuthn.AuthenticatorAssertionResponse;
 using Base64UrlConverter = DSInternals.Win32.WebAuthn.Base64UrlConverter;
@@ -30,6 +30,35 @@ internal class WebAuthService
     public WebAuthService()
     {
         this.webAuthApi = new WebAuthnApi();
+    }
+
+    public Guid GetAAGuid(PublicKeyCredential registrationCredential)
+    {
+        var cborObject = CBORObject.DecodeFromBytes(registrationCredential.AuthenticatorResponse.AttestationObject);
+        var authData = cborObject["authData"];
+        var authDataBytes = authData.GetByteString();
+
+        // authData structure:
+        // - rpIdHash: 32 bytes
+        // - flags: 1 byte
+        // - signCount: 4 bytes
+        // Total before attestedCredentialData: 37 bytes
+        var offset = 37;
+
+        // Check if AT (Attested credential data) flag is set (bit 6)
+        var flags = authDataBytes[32];
+        var hasAttestedCredentialData = (flags & 0x40) != 0;
+
+        if (!hasAttestedCredentialData)
+        {
+            throw new InvalidOperationException("authData does not contain attestedCredentialData (missing AT flag)");
+        }
+
+        // aaguid is next 16 bytes
+        var aaguidBytes = new byte[16];
+        Array.Copy(authDataBytes, offset, aaguidBytes, destinationIndex: 0, length: 16);
+
+        return new Guid(aaguidBytes);
     }
 
     public async Task<AuthenticatorAssertionResponse> GetAssertionAsync(byte[] challenge, CancellationToken cancellationToken = default)
@@ -149,19 +178,6 @@ internal class WebAuthService
             assertionResponse.AuthenticatorData,
             assertionResponse.ClientDataJson,
             assertionResponse.Signature);
-    }
-
-    private class ClientDataJson
-    {
-        [JsonPropertyName("challenge")]
-        public string Challenge { get; set; }
-
-        [JsonPropertyName("crossOrigin")]
-        public bool? CrossOrigin { get; set; }
-        [JsonPropertyName("origin")]
-        public string Origin { get; set; }
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
     }
 
     private byte[] ExtractPublicKeyFromAttestationObjectBytes(byte[] attestationObject)

@@ -25,6 +25,12 @@
             BorderThickness="1"
             Text="{Binding Path=PublicKeyCredentialSerialize}"
             TextWrapping="Wrap" />
+        <Label>AAGUID:</Label>
+        <TextBox
+            AcceptsReturn="True"
+            BorderThickness="1"
+            Text="{Binding Path=AAGuid}"
+            TextWrapping="Wrap" />
         <Label>---</Label>
         <Button Command="{Binding Path=GetAssertion}">Get Assertion</Button>
         <Label>Challenge:</Label>

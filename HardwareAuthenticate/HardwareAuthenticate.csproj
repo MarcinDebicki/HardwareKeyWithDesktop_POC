@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
@@ -27,5 +26,11 @@
     <PackageReference Include="DSInternals.Win32.WebAuthn" Version="1.0.6" />
     <PackageReference Include="DSInternals.Win32.WebAuthn.Adapter" Version="1.0.6" />
     <PackageReference Include="Fido2" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\blob.jwt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
